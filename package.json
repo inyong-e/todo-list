@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "serve": "webpack serve --open --mode=development",
+    "build": "webpack --mode=production"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.3",
+    "source-map-loader": "^4.0.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
