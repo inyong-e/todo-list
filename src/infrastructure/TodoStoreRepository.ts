@@ -4,14 +4,32 @@ export default class todoStoreRepository implements TodoStoreRepository {
   todoList: Todo[];
 
   constructor() {
-    this.TodoList = [];
+    this.todoList = [];
   }
 
-  get TodoList(): Todo[] {
-    return this.TodoList;
+  createTodoItem(todo: Todo): void {
+    this.todoList.push(todo);
   }
 
-  set TodoList(todoList: Todo[]) {
-    this.todoList = todoList;
+  removeTodoItem(id: string): void {
+    this.todoList = this.todoList.filter((item) => item.id !== id);
+  }
+
+  removeTodoItemAll(): void {
+    this.todoList = [];
+  }
+
+  updateTodoItem(todo: Todo): void {
+    this.todoList = this.todoList.map((item) =>
+      item.id === todo.id ? todo : item,
+    );
+  }
+
+  getTodoList(): Todo[] {
+    return this.todoList;
+  }
+
+  getTodoItem(id: string): Todo | undefined {
+    return this.todoList.find((item) => item.id === id);
   }
 }

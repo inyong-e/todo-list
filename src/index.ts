@@ -10,4 +10,4 @@ const todoListService = new TodoListService({
 });
 
 const rootElement = document.body;
-todoListService.initialRender(rootElement);
+todoListService.InitialRender(rootElement);
