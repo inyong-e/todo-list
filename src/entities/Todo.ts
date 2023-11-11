@@ -3,9 +3,8 @@ export interface Todo {
   complete: boolean;
 }
 
-export interface TodoRepository {
-  save(todo: Todo): void;
-  findAll(): Todo[];
-  findById(id: number): Todo | undefined;
-  deleteById(id: number): void;
+export interface TodoStoreRepository {}
+
+export interface TodoRenderRepository {
+  initialRender(rootElement: HTMLElement): void;
 }

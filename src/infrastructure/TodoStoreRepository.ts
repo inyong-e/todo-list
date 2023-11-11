@@ -1,13 +1,17 @@
-import { Todo } from "@/entities/Todo";
+import { Todo, TodoStoreRepository } from "@/entities/Todo";
 
-export default class TodoStoreRepository {
-  static TodoList: Todo[] = [];
+export default class todoStoreRepository implements TodoStoreRepository {
+  todoList: Todo[];
 
-  get TodoList() {
-    return TodoStoreRepository.TodoList;
+  constructor() {
+    this.TodoList = [];
+  }
+
+  get TodoList(): Todo[] {
+    return this.TodoList;
   }
 
   set TodoList(todoList: Todo[]) {
-    TodoStoreRepository.TodoList = todoList;
+    this.todoList = todoList;
   }
 }

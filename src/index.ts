@@ -1,15 +1,10 @@
-console.log("123333");
+import DomRenderingRepository from "./infrastructure/DomRenderingRepository";
+import TodoStoreRepository from "./infrastructure/TodoStoreRepository";
+import TodoListService from "./usecases/TodoListService";
 
-console.log("11123");
+const todoListService = new TodoListService({
+  todoStoreRepository: new TodoStoreRepository(), // TodoList 비즈니스 로직
+  todoRenderRepository: new DomRenderingRepository(), // TodoList 렌더링 로직
+});
 
-interface Props {
-  name: string;
-  age: number;
-}
-
-const test: Props = {
-  name: "123",
-  age: 123,
-};
-
-console.log(test);
+console.log("🚀  todoListService:", todoListService);
