@@ -1,4 +1,29 @@
-.todo-list-wrapper {
-  width: 400px;
+.wrapper {
+  width: 600px;
   border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.input-box {
+  width: 100%; 
+  border: 2px dotted #ccc;
+  height: 32px;
+}
+
+.todo-list-wrapper {
+  margin-top: 18px;
+  width: 100%;
+}
+
+.todo-item {
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 12px;
+}
+
+.footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between
 }
