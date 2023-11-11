@@ -10,6 +10,24 @@ module.exports = {
   plugins: [new HtmlWebpackPlugin({
     template: "./public/index.html"
   })],
+  module: {
+    rules: [
+      {
+        test: /[\.js]$/,
+        exclude: /node_module/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
+        test: /\.ts$/,
+        exclude: /node_module/,
+        use: {
+          loader: "ts-loader",
+        },
+      },
+    ],
+  },
   devServer: {
     static: {
       directory: path.resolve(__dirname, 'dist')
