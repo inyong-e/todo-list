@@ -1,4 +1,4 @@
-import { Todo, TodoStoreRepository } from "@/entities/Todo";
+import { Todo, TodoStoreRepository } from "@/entities/Store";
 
 export default class todoStoreRepository implements TodoStoreRepository {
   todoList: Todo[];

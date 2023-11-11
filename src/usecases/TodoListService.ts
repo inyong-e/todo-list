@@ -1,4 +1,5 @@
-import { TodoRenderRepository, TodoStoreRepository } from "@/entities/Todo";
+import { TodoRenderRepository } from "@/entities/render";
+import { TodoStoreRepository } from "@/entities/Store";
 
 class TodoListService {
   todoStoreRepository: TodoStoreRepository;

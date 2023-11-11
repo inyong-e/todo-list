@@ -1,4 +1,4 @@
-import { TodoRenderRepository } from "@/entities/Todo";
+import { TodoRenderRepository } from "@/entities/render";
 
 export default class DomRenderingRepository implements TodoRenderRepository {
   initialRender(rootElement: HTMLElement): void {
