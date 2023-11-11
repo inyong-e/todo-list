@@ -1,4 +1,4 @@
-export enum RenderingDomIDs {
+export enum DomClassNames {
   todoListWrapper = "todo-list-wrapper",
 }
 
