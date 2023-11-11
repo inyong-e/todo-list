@@ -16,18 +16,24 @@ module.exports = {
         test: /[\.js]$/,
         exclude: /node_module/,
         use: {
-          loader: "babel-loader",
+          loader: "babel-loader"
         },
       },
       {
         test: /\.ts$/,
         exclude: /node_module/,
         use: {
-          loader: "ts-loader",
+          loader: "ts-loader"
         },
       },
     ],
   },
+	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "./src/"),
+		},
+     extensions:[".ts", ".css", ]
+	},
   devServer: {
     static: {
       directory: path.resolve(__dirname, 'dist')
