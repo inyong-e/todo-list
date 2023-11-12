@@ -36,6 +36,8 @@ class TodoListService {
     this.renderRepository.addFilterButtonCompletedEvent(
       this.ShowTodoListCompleted.bind(this),
     );
+
+    this.renderRepository.fillFilterButtonAll();
   }
 
   ClearCompletedTodoItem() {
@@ -104,11 +106,32 @@ class TodoListService {
     this.renderRepository.updateAllClearButton(completedTodoList.length);
   }
 
+  RenderMouseMoveBody(e: MouseEvent) {
+    this.renderRepository.moveMirrorTodoItem(e.clientX, e.clientY);
+  }
+
+  RenderMouseUpBody() {
+    this.renderRepository.hideMirrorTodoItem();
+    this.renderRepository.removeBodyMouseMoveEvent();
+    this.renderRepository.removeBodyMouseUpEvent();
+  }
+
   RenderCreateTodo(todo: Todo) {
     this.renderRepository.createTodoItem({
       todo,
       onClickTodoItem: () => this.ToggleTodoItem(todo.id),
       onClickRemoveButton: () => this.RemoveTodoItem(todo.id),
+      onDownTodoItem: () => {
+        this.renderRepository.showMirrorTodoItem(todo);
+
+        this.renderRepository.addBodyMouseMoveEvent(
+          this.RenderMouseMoveBody.bind(this),
+        );
+
+        this.renderRepository.addBodyMouseUpEvent(
+          this.RenderMouseUpBody.bind(this),
+        );
+      },
     });
   }
 

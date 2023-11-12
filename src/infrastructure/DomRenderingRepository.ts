@@ -6,6 +6,10 @@ import {
 } from "@/entities/render";
 
 export default class DomRenderingRepository implements TodoRenderRepository {
+  mirrorTodoElement: HTMLElement | null;
+  eventListenerMouseMoveMirrorTodoItem: (e: Event) => void;
+  eventListenerMouseUpMirrorTodoItem: (e: Event) => void;
+
   initialRender(body: HTMLElement): void {
     const rootElement = document.createElement("div");
     rootElement.className = DomClassNames.wrapper;
@@ -62,6 +66,46 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     footer.appendChild(allClearButton);
 
     body.appendChild(rootElement);
+
+    // Mirror Todo Item 생성
+    this.createMirrorTodoItem();
+  }
+
+  showMirrorTodoItem(todo: Todo): void {
+    this.mirrorTodoElement.querySelector("span").textContent = todo.content;
+  }
+
+  moveMirrorTodoItem(x: number, y: number): void {
+    this.mirrorTodoElement?.classList.remove(DomClassNames.hide);
+    this.mirrorTodoElement?.style.setProperty("top", `${y}px`);
+    this.mirrorTodoElement?.style.setProperty("left", `${x}px`);
+  }
+
+  hideMirrorTodoItem(): void {
+    this.mirrorTodoElement?.classList.add(DomClassNames.hide);
+  }
+
+  addBodyMouseMoveEvent(e: (e: Event) => void) {
+    document.body.addEventListener("mousemove", e);
+    this.eventListenerMouseMoveMirrorTodoItem = e;
+  }
+
+  addBodyMouseUpEvent(e: (e: Event) => void) {
+    document.body.addEventListener("mouseup", e);
+    this.eventListenerMouseUpMirrorTodoItem = e;
+  }
+
+  removeBodyMouseMoveEvent() {
+    document.body.removeEventListener(
+      "mousemove",
+      this.eventListenerMouseMoveMirrorTodoItem,
+    );
+  }
+  removeBodyMouseUpEvent() {
+    document.body.removeEventListener(
+      "mouseup",
+      this.eventListenerMouseUpMirrorTodoItem,
+    );
   }
 
   addInputBoxEvent(e: (e: Event) => void) {
@@ -108,6 +152,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todo,
     onClickTodoItem,
     onClickRemoveButton,
+    onDownTodoItem,
   }: CreateTodoParams): void {
     const todoListWrapper = document.querySelector(
       `.${DomClassNames.todoListWrapper}`,
@@ -118,8 +163,11 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todoItem.classList.add(DomClassNames.todoItem);
     todoItem.classList.add(todo.id);
 
-    todoItem.addEventListener("click", onClickTodoItem);
     todoListWrapper.insertBefore(todoItem, todoListWrapper.firstChild);
+
+    // todo Item 에 필요한 이벤트 리스너들 추가
+    todoItem.addEventListener("click", onClickTodoItem);
+    todoItem.addEventListener("mousedown", onDownTodoItem);
 
     // Todo CheckBox 생성
     const todoItemCheckBox = document.createElement("input");
@@ -142,6 +190,32 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todoItemDeleteButton.textContent = "삭제";
 
     todoItem.appendChild(todoItemDeleteButton);
+  }
+
+  createMirrorTodoItem(): void {
+    // Todo Item 생성
+    const todoItem = document.createElement("div");
+    todoItem.classList.add(DomClassNames.dragging);
+    todoItem.classList.add(DomClassNames.disabled);
+    todoItem.classList.add(DomClassNames.hide);
+
+    // Todo CheckBox 생성
+    const todoItemCheckBox = document.createElement("input");
+    todoItemCheckBox.type = "checkbox";
+    todoItem.appendChild(todoItemCheckBox);
+
+    // Todo Item Text 생성
+    const todoItemText = document.createElement("span");
+    todoItem.appendChild(todoItemText);
+
+    // Todo Item Remove Button 생성
+    const todoItemDeleteButton = document.createElement("button");
+    todoItemDeleteButton.textContent = "삭제";
+
+    todoItem.appendChild(todoItemDeleteButton);
+    document.body.appendChild(todoItem);
+
+    this.mirrorTodoElement = todoItem;
   }
 
   removeTodoItem(id: string): void {

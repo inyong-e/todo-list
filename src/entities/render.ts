@@ -3,6 +3,7 @@ import { Todo } from "./Store";
 export interface CreateTodoParams {
   todo: Todo;
   onClickTodoItem: (e: Event) => void;
+  onDownTodoItem: (e: Event) => void;
   onClickRemoveButton: () => void;
 }
 
@@ -18,22 +19,27 @@ export enum DomClassNames {
   inputBox = "input-box",
   todoItem = "todo-item",
   wrapper = "wrapper",
+  disabled = "disabled",
+  dragging = "dragging",
+  hide = "hide",
 }
 
 export interface TodoRenderRepository {
-  initialRender(rootElement: HTMLElement): void;
+  activeInputBox(): void;
   addInputBoxEvent(e: (e: Event) => void): void;
   addAllClearCompletedButtonEvent(e: (e: Event) => void): void;
   addFilterButtonAllEvent(e: (e: Event) => void): void;
   addFilterButtonActiveEvent(e: (e: Event) => void): void;
   addFilterButtonCompletedEvent(e: (e: Event) => void): void;
+  addBodyMouseMoveEvent(e: (e: Event) => void): void;
+  addBodyMouseUpEvent(e: (e: Event) => void): void;
   fillFilterButtonAll(): void;
   fillFilterButtonActive(): void;
   fillFilterButtonCompleted(): void;
+  createMirrorTodoItem(todo: Todo): void;
   clearFilterButtonAll(): void;
   clearFilterButtonActive(): void;
   clearFilterButtonCompleted(): void;
-
   clearAllTodoList(): void;
   clearInputBox(): void;
   createTodoItem({
@@ -42,9 +48,14 @@ export interface TodoRenderRepository {
     onClickRemoveButton,
   }: CreateTodoParams): void;
   removeTodoItem(id: string): void;
+  removeBodyMouseMoveEvent(): void;
+  removeBodyMouseUpEvent(): void;
   updateTodoItem(todo: Todo);
   updateTodoCountText(): void;
   updateAllClearButton(count: number): void;
   preventInputBox(): void;
-  activeInputBox(): void;
+  showMirrorTodoItem(todo: Todo): void;
+  moveMirrorTodoItem(x: number, y: number): void;
+  hideMirrorTodoItem(): void;
+  initialRender(rootElement: HTMLElement): void;
 }
