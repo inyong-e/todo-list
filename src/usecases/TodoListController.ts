@@ -153,7 +153,7 @@ class TodoListService {
   }
 
   GetSortTodoList(todo: Todo, overTodo: Todo, todoList: Todo[]): Todo[] {
-    if (overTodo === null) todoList;
+    if (overTodo === null) return todoList;
 
     const activeTodoList = todoList.filter((item) => !item.complete);
     const completedTodoList = todoList.filter((item) => item.complete);
@@ -207,7 +207,7 @@ class TodoListService {
       );
       this.renderRepository.previewTodoListLayout(todoList);
       this.timer = null;
-    }, 1000) as unknown as number;
+    }, 500) as unknown as number;
   }
 
   RenderMouseMoveBody(todo: Todo) {
