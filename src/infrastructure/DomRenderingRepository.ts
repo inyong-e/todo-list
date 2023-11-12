@@ -153,7 +153,6 @@ export default class DomRenderingRepository implements TodoRenderRepository {
 
   createTodoItem({
     todo,
-    onClickTodoItem,
     onClickRemoveButton,
     onDownTodoItem,
     onOverTodoItem,
@@ -170,7 +169,6 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todoListWrapper.insertBefore(todoItem, todoListWrapper.firstChild);
 
     // todo Item 에 필요한 이벤트 리스너들 추가
-    todoItem.addEventListener("click", onClickTodoItem);
     todoItem.addEventListener("mousedown", onDownTodoItem);
     todoItem.addEventListener("mouseover", onOverTodoItem);
 

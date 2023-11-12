@@ -2,7 +2,6 @@ import { Todo } from "./Store";
 
 export interface CreateTodoParams {
   todo: Todo;
-  onClickTodoItem: (e: Event) => void;
   onDownTodoItem: (e: Event) => void;
   onOverTodoItem: (e: Event) => void;
   onClickRemoveButton: () => void;
@@ -43,11 +42,7 @@ export interface TodoRenderRepository {
   clearFilterButtonCompleted(): void;
   clearAllTodoList(): void;
   clearInputBox(): void;
-  createTodoItem({
-    todo,
-    onClickTodoItem,
-    onClickRemoveButton,
-  }: CreateTodoParams): void;
+  createTodoItem({ todo, onClickRemoveButton }: CreateTodoParams): void;
   removeTodoItem(id: string): void;
   removeBodyMouseMoveEvent(): void;
   removeBodyMouseUpEvent(): void;

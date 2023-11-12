@@ -3,6 +3,7 @@ import { Todo, TodoStoreRepository } from "@/entities/Store";
 import generateUniqueId from "@/utils";
 
 class TodoListService {
+  dragStatus: boolean = false;
   overTodo: Todo | null = null;
   storeRepository: TodoStoreRepository;
   renderRepository: TodoRenderRepository;
@@ -124,15 +125,22 @@ class TodoListService {
   }
 
   RenderMouseMoveBody(e: MouseEvent) {
+    this.dragStatus = true;
     this.renderRepository.moveMirrorTodoItem(e.clientX, e.clientY);
   }
 
   RenderMouseUpBody(todo: Todo) {
     return () => {
-      this.ReLocateTodoItem(todo, this.overTodo);
+      if (this.dragStatus) {
+        this.ReLocateTodoItem(todo, this.overTodo);
+      } else {
+        this.ToggleTodoItem(todo.id);
+      }
+
       this.renderRepository.hideMirrorTodoItem();
       this.renderRepository.removeBodyMouseMoveEvent();
       this.renderRepository.removeBodyMouseUpEvent();
+      this.dragStatus = false;
     };
   }
 
@@ -143,7 +151,6 @@ class TodoListService {
   RenderCreateTodo(todo: Todo) {
     this.renderRepository.createTodoItem({
       todo,
-      onClickTodoItem: () => this.ToggleTodoItem(todo.id),
       onClickRemoveButton: () => this.RemoveTodoItem(todo.id),
       onOverTodoItem: () => this.OverTodoItem(todo),
       onDownTodoItem: () => {
