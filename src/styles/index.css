@@ -20,6 +20,7 @@ body{
 .todo-list-wrapper {
   margin-top: 18px;
   width: 100%;
+  position: relative;
 }
 
 .todo-item {
@@ -45,9 +46,7 @@ body{
 }
 
 .dragging {
-  display: flex;
   position: absolute;
-  justify-content: space-between;
   width: 300px;
   pointer-events: none;
 }
@@ -58,4 +57,9 @@ body{
 
 .over-border {
   border-left: 4px solid blue;
+}
+.preview-layout {
+  position: absolute;
+  width: 100%;
+  background-color: white;
 }

@@ -3,6 +3,7 @@ import { Todo, TodoStoreRepository } from "@/entities/Store";
 import generateUniqueId from "@/utils";
 
 class TodoListService {
+  timer: number | null = null;
   dragStatus: boolean = false;
   overTodo: Todo | null = null;
   storeRepository: TodoStoreRepository;
@@ -116,21 +117,40 @@ class TodoListService {
     this.renderRepository.removeBodyMouseMoveEvent();
     this.renderRepository.removeBodyMouseUpEvent();
     this.dragStatus = false;
+    clearTimeout(this.timer);
+    this.timer = null;
   }
 
-  ReLocateTodoItem(todo: Todo, overTodo: Todo) {
-    if (overTodo === null) return;
+  GetSortTodoList(todo: Todo, overTodo: Todo): Todo[] {
+    if (overTodo === null) return this.storeRepository.getTodoListAll();
 
     const todoList = this.storeRepository.getTodoListAll().slice();
 
-    const findTodoIndex = todoList.findIndex((item) => item.id === todo.id);
-    const findOverTodoIndex = todoList.findIndex(
+    const activeTodoList = todoList.filter((item) => !item.complete);
+    const completedTodoList = todoList.filter((item) => item.complete);
+
+    const findTodoIndex = activeTodoList.findIndex(
+      (item) => item.id === todo.id,
+    );
+    const findOverTodoIndex = activeTodoList.findIndex(
       (item) => item.id === overTodo.id,
     );
 
-    const removedElement = todoList.splice(findTodoIndex, 1)[0];
+    const removedElement = activeTodoList.splice(findTodoIndex, 1)[0];
 
-    todoList.splice(findOverTodoIndex, 0, removedElement);
+    activeTodoList.splice(findOverTodoIndex, 0, removedElement);
+
+    return [...completedTodoList, ...activeTodoList];
+  }
+
+  GetReplaceByCompleteTodoList(todoList: Todo[]): Todo[] {
+    const activeTodos = todoList.filter((item) => !item.complete);
+    const completedTodos = todoList.filter((item) => item.complete);
+    return [...activeTodos, ...completedTodos];
+  }
+
+  ReLocateTodoItem(todo: Todo, overTodo: Todo) {
+    const todoList = this.GetSortTodoList(todo, overTodo);
 
     this.storeRepository.setTodoList(todoList);
     this.ShowTodoListAll();
@@ -141,9 +161,28 @@ class TodoListService {
     this.renderRepository.updateAllClearButton(completedTodoList.length);
   }
 
-  RenderMouseMoveBody(e: MouseEvent) {
-    this.dragStatus = true;
-    this.renderRepository.moveMirrorTodoItem(e.clientX, e.clientY);
+  TimerForPreview(todo: Todo, overTodo?: Todo) {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+
+    this.timer = setTimeout(() => {
+      const todoList = this.GetSortTodoList(todo, overTodo);
+      this.renderRepository.previewTodoListLayout(todoList);
+      this.timer = null;
+    }, 1000) as unknown as number;
+  }
+
+  RenderMouseMoveBody(todo: Todo) {
+    return (e: MouseEvent) => {
+      if (!this.timer) {
+        this.ShowTodoListAll();
+      }
+
+      this.dragStatus = true;
+      this.renderRepository.moveMirrorTodoItem(e.clientX, e.clientY);
+      this.TimerForPreview(todo, this.overTodo);
+    };
   }
 
   RenderMouseUpBody(todo: Todo) {
@@ -169,17 +208,18 @@ class TodoListService {
   RenderCreateTodo(todo: Todo) {
     this.renderRepository.createTodoItem({
       todo,
+      onOverTodoItem: () => this.OverTodoItem(todo),
       onClickRemoveButton: (e: Event) => {
         e.stopPropagation();
         this.RemoveTodoItem(todo.id);
       },
-      onOverTodoItem: () => this.OverTodoItem(todo),
+
       onDownTodoItem: (e) => {
         e.stopPropagation();
         this.renderRepository.showMirrorTodoItem(todo);
 
         this.renderRepository.addBodyMouseMoveEvent(
-          this.RenderMouseMoveBody.bind(this),
+          this.RenderMouseMoveBody(todo).bind(this),
         );
 
         this.renderRepository.addBodyMouseUpEvent(
@@ -225,6 +265,7 @@ class TodoListService {
 
   InputDocumentKeyEvent(e: KeyboardEvent) {
     if (e.key !== "Escape") return;
+
     this.ClearOverTodo();
     this.CancelDragTodoItem();
   }

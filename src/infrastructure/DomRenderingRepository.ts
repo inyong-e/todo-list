@@ -96,6 +96,21 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     this.eventListenerMouseMoveMirrorTodoItem = e;
   }
 
+  previewTodoListLayout(todoList: Todo[]) {
+    const previewLayout = document.createElement("div");
+    previewLayout.className = DomClassNames.previewLayout;
+
+    const todoListWrapper = document.querySelector(
+      `.${DomClassNames.todoListWrapper}`,
+    );
+
+    todoListWrapper.insertBefore(previewLayout, todoListWrapper.firstChild);
+
+    todoList.reverse().forEach((todo) => {
+      const newTodo = this.getTodoItem(todo);
+      previewLayout.appendChild(newTodo);
+    });
+  }
   addBodyMouseUpEvent(e: (e: Event) => (todo: Todo) => void) {
     document.body.addEventListener("mouseup", e);
     this.eventListenerMouseUpMirrorTodoItem = e;
@@ -208,20 +223,25 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todoItem.appendChild(todoItemDeleteButton);
   }
 
-  createMirrorTodoItem(): void {
+  getTodoItem(todo?: Todo) {
     // Todo Item 생성
     const todoItem = document.createElement("div");
-    todoItem.classList.add(DomClassNames.dragging);
-    todoItem.classList.add(DomClassNames.disabled);
-    todoItem.classList.add(DomClassNames.hide);
+    todoItem.classList.add(DomClassNames.todoItem);
+    if (!todo) {
+      todoItem.classList.add(DomClassNames.dragging);
+      todoItem.classList.add(DomClassNames.disabled);
+      todoItem.classList.add(DomClassNames.hide);
+    }
 
     // Todo CheckBox 생성
     const todoItemCheckBox = document.createElement("input");
     todoItemCheckBox.type = "checkbox";
+    todoItemCheckBox.checked = todo?.complete ?? false;
     todoItem.appendChild(todoItemCheckBox);
 
     // Todo Item Text 생성
     const todoItemText = document.createElement("span");
+    todoItemText.textContent = todo?.content ?? "";
     todoItem.appendChild(todoItemText);
 
     // Todo Item Remove Button 생성
@@ -229,6 +249,12 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todoItemDeleteButton.textContent = "삭제";
 
     todoItem.appendChild(todoItemDeleteButton);
+
+    return todoItem;
+  }
+
+  createMirrorTodoItem(): void {
+    const todoItem = this.getTodoItem();
     document.body.insertBefore(todoItem, document.body.firstChild);
 
     this.mirrorTodoElement = todoItem;

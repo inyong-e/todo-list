@@ -24,6 +24,7 @@ export enum DomClassNames {
   dragging = "dragging",
   hide = "hide",
   overBorder = "over-border",
+  previewLayout = "preview-layout",
 }
 
 export interface TodoRenderRepository {
@@ -60,4 +61,5 @@ export interface TodoRenderRepository {
   moveMirrorTodoItem(x: number, y: number): void;
   hideMirrorTodoItem(): void;
   initialRender(rootElement: HTMLElement): void;
+  previewTodoListLayout(todoList: Todo[]): void;
 }
