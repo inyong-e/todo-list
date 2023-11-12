@@ -3,6 +3,7 @@ import { Todo, TodoStoreRepository } from "@/entities/Store";
 import generateUniqueId from "@/utils";
 
 class TodoListService {
+  filterType: "all" | "active" | "completed";
   timer: number | null = null;
   dragStatus: boolean = false;
   overTodo: Todo | null = null;
@@ -21,6 +22,7 @@ class TodoListService {
   }
 
   InitialRender(rootElement: HTMLElement) {
+    this.filterType = "all";
     this.renderRepository.initialRender(rootElement);
     this.renderRepository.addInputBoxEvent(this.InputBoxKeyEvent.bind(this));
     this.renderRepository.addOutsideMirrorTodo(this.ClearOverTodo.bind(this));
@@ -51,6 +53,7 @@ class TodoListService {
   ClearOverTodo() {
     this.overTodo = null;
   }
+
   ClearCompletedTodoItem() {
     this.storeRepository.getCompletedTodoList().forEach((todo) => {
       this.storeRepository.removeTodoItem(todo.id);
@@ -59,6 +62,20 @@ class TodoListService {
 
     this.RenderCompleteTodoCount();
     this.renderRepository.updateTodoCountText();
+  }
+
+  ShowTodoList() {
+    switch (this.filterType) {
+      case "all":
+        this.ShowTodoListAll();
+        break;
+      case "active":
+        this.ShowTodoListActive();
+        break;
+      case "completed":
+        this.ShowTodoListCompleted();
+        break;
+    }
   }
 
   ShowTodoListAll() {
@@ -73,6 +90,7 @@ class TodoListService {
     this.renderRepository.fillFilterButtonAll();
     this.renderRepository.clearFilterButtonActive();
     this.renderRepository.clearFilterButtonCompleted();
+    this.filterType = "all";
   }
 
   ShowTodoListActive() {
@@ -85,6 +103,7 @@ class TodoListService {
     this.renderRepository.clearFilterButtonAll();
     this.renderRepository.fillFilterButtonActive();
     this.renderRepository.clearFilterButtonCompleted();
+    this.filterType = "active";
   }
 
   ShowTodoListCompleted() {
@@ -97,6 +116,7 @@ class TodoListService {
     this.renderRepository.clearFilterButtonAll();
     this.renderRepository.clearFilterButtonActive();
     this.renderRepository.fillFilterButtonCompleted();
+    this.filterType = "completed";
   }
 
   ToggleTodoItem(todoId: string) {
@@ -107,7 +127,7 @@ class TodoListService {
 
     this.storeRepository.updateTodoItem(updatedTodo);
 
-    this.ShowTodoListAll();
+    this.ShowTodoList();
 
     this.RenderCompleteTodoCount();
   }
@@ -121,10 +141,19 @@ class TodoListService {
     this.timer = null;
   }
 
-  GetSortTodoList(todo: Todo, overTodo: Todo): Todo[] {
-    if (overTodo === null) return this.storeRepository.getTodoListAll();
+  GetCurrentTodoList(): Todo[] {
+    switch (this.filterType) {
+      case "all":
+        return this.storeRepository.getTodoListAll().slice();
+      case "active":
+        return this.storeRepository.getActiveTodoList().slice();
+      case "completed":
+        return this.storeRepository.getCompletedTodoList().slice();
+    }
+  }
 
-    const todoList = this.storeRepository.getTodoListAll().slice();
+  GetSortTodoList(todo: Todo, overTodo: Todo, todoList: Todo[]): Todo[] {
+    if (overTodo === null) todoList;
 
     const activeTodoList = todoList.filter((item) => !item.complete);
     const completedTodoList = todoList.filter((item) => item.complete);
@@ -150,10 +179,14 @@ class TodoListService {
   }
 
   ReLocateTodoItem(todo: Todo, overTodo: Todo) {
-    const todoList = this.GetSortTodoList(todo, overTodo);
+    const todoList = this.GetSortTodoList(
+      todo,
+      overTodo,
+      this.storeRepository.getTodoListAll().slice(),
+    );
 
     this.storeRepository.setTodoList(todoList);
-    this.ShowTodoListAll();
+    this.ShowTodoList();
   }
 
   RenderCompleteTodoCount() {
@@ -167,7 +200,11 @@ class TodoListService {
     }
 
     this.timer = setTimeout(() => {
-      const todoList = this.GetSortTodoList(todo, overTodo);
+      const todoList = this.GetSortTodoList(
+        todo,
+        overTodo,
+        this.GetCurrentTodoList(),
+      );
       this.renderRepository.previewTodoListLayout(todoList);
       this.timer = null;
     }, 1000) as unknown as number;
@@ -178,7 +215,7 @@ class TodoListService {
       if (todo.complete) return;
 
       if (!this.timer) {
-        this.ShowTodoListAll();
+        this.ShowTodoList();
       }
 
       this.dragStatus = true;
