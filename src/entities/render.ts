@@ -29,12 +29,14 @@ export enum DomClassNames {
 export interface TodoRenderRepository {
   activeInputBox(): void;
   addInputBoxEvent(e: (e: Event) => void): void;
+  addOutsideMirrorTodo(e: (e: Event) => void): void;
   addAllClearCompletedButtonEvent(e: (e: Event) => void): void;
   addFilterButtonAllEvent(e: (e: Event) => void): void;
   addFilterButtonActiveEvent(e: (e: Event) => void): void;
   addFilterButtonCompletedEvent(e: (e: Event) => void): void;
   addBodyMouseMoveEvent(e: (e: Event) => void): void;
   addBodyMouseUpEvent(e: (e: Event) => (todo: Todo) => void): void;
+  addDocumentKeyEvent(e: (e: Event) => void): void;
   fillFilterButtonAll(): void;
   fillFilterButtonActive(): void;
   fillFilterButtonCompleted(): void;

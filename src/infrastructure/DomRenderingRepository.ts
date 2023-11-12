@@ -88,6 +88,9 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     this.mirrorTodoElement?.classList.add(DomClassNames.hide);
   }
 
+  addDocumentKeyEvent(e: (e: Event) => void) {
+    document.addEventListener("keydown", e);
+  }
   addBodyMouseMoveEvent(e: (e: Event) => void) {
     document.body.addEventListener("mousemove", e);
     this.eventListenerMouseMoveMirrorTodoItem = e;
@@ -109,6 +112,14 @@ export default class DomRenderingRepository implements TodoRenderRepository {
       "mouseup",
       this.eventListenerMouseUpMirrorTodoItem,
     );
+  }
+
+  addOutsideMirrorTodo(e: (e: Event) => void) {
+    const todoListWrapper = document.querySelector(
+      `.${DomClassNames.todoListWrapper}`,
+    ) as HTMLElement;
+
+    todoListWrapper.addEventListener("mouseleave", e);
   }
 
   addInputBoxEvent(e: (e: Event) => void) {

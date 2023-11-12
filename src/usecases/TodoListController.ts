@@ -22,6 +22,7 @@ class TodoListService {
   InitialRender(rootElement: HTMLElement) {
     this.renderRepository.initialRender(rootElement);
     this.renderRepository.addInputBoxEvent(this.InputBoxKeyEvent.bind(this));
+    this.renderRepository.addOutsideMirrorTodo(this.ClearOverTodo.bind(this));
 
     this.renderRepository.addAllClearCompletedButtonEvent(
       this.ClearCompletedTodoItem.bind(this),
@@ -39,9 +40,16 @@ class TodoListService {
       this.ShowTodoListCompleted.bind(this),
     );
 
+    this.renderRepository.addDocumentKeyEvent(
+      this.InputDocumentKeyEvent.bind(this),
+    );
+
     this.renderRepository.fillFilterButtonAll();
   }
 
+  ClearOverTodo() {
+    this.overTodo = null;
+  }
   ClearCompletedTodoItem() {
     this.storeRepository.getCompletedTodoList().forEach((todo) => {
       this.storeRepository.removeTodoItem(todo.id);
@@ -103,7 +111,16 @@ class TodoListService {
     this.RenderCompleteTodoCount();
   }
 
+  CancelDragTodoItem() {
+    this.renderRepository.hideMirrorTodoItem();
+    this.renderRepository.removeBodyMouseMoveEvent();
+    this.renderRepository.removeBodyMouseUpEvent();
+    this.dragStatus = false;
+  }
+
   ReLocateTodoItem(todo: Todo, overTodo: Todo) {
+    if (overTodo === null) return;
+
     const todoList = this.storeRepository.getTodoListAll().slice();
 
     const findTodoIndex = todoList.findIndex((item) => item.id === todo.id);
@@ -137,10 +154,7 @@ class TodoListService {
         this.ToggleTodoItem(todo.id);
       }
 
-      this.renderRepository.hideMirrorTodoItem();
-      this.renderRepository.removeBodyMouseMoveEvent();
-      this.renderRepository.removeBodyMouseUpEvent();
-      this.dragStatus = false;
+      this.CancelDragTodoItem();
     };
   }
 
@@ -191,6 +205,7 @@ class TodoListService {
   }
 
   InputBoxKeyEvent(e: KeyboardEvent) {
+    e.stopPropagation();
     if (e.key !== "Enter") return;
 
     const id = generateUniqueId();
@@ -206,6 +221,12 @@ class TodoListService {
     this.storeRepository.createTodoItem(todo);
     this.renderRepository.clearInputBox();
     this.renderRepository.updateTodoCountText();
+  }
+
+  InputDocumentKeyEvent(e: KeyboardEvent) {
+    if (e.key !== "Escape") return;
+    this.ClearOverTodo();
+    this.CancelDragTodoItem();
   }
 
   RemoveTodoItem(todoId: string) {
