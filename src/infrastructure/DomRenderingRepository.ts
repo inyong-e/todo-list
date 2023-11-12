@@ -54,7 +54,8 @@ export default class DomRenderingRepository implements TodoRenderRepository {
 
     // all Clear 버튼 생성
     const allClearButton = document.createElement("button");
-    allClearButton.textContent = "Clear completed(0)";
+    allClearButton.className = DomClassNames.allClearButton;
+    allClearButton.textContent = "Clear completed (0)";
     footer.appendChild(allClearButton);
 
     body.appendChild(rootElement);
@@ -162,7 +163,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
       `.${DomClassNames.allClearButton}`,
     ) as HTMLElement;
 
-    allClearButton.textContent = `Clear completed(${count})`;
+    allClearButton.textContent = `Clear completed (${count})`;
   }
 
   updateFilterButtonAll(): void {
@@ -243,6 +244,6 @@ export default class DomRenderingRepository implements TodoRenderRepository {
       `.${DomClassNames.allClearButton}`,
     ) as HTMLElement;
 
-    allClearButton.textContent = `Clear completed(${index})`;
+    allClearButton.textContent = `Clear completed (${index})`;
   }
 }

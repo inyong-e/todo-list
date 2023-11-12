@@ -20,6 +20,9 @@ class TodoListService {
   InitialRender(rootElement: HTMLElement) {
     this.renderRepository.initialRender(rootElement);
     this.renderRepository.addInputBoxEvent(this.InputBoxKeyEvent.bind(this));
+    this.renderRepository.addAllClearCompletedButtonEvent(
+      this.ClearCompletedTodoItem.bind(this),
+    );
   }
 
   ShowTodoListAll() {
@@ -49,18 +52,25 @@ class TodoListService {
     const activeTodoList = this.storeRepository.getActiveTodoList();
 
     completedTodoList.forEach((todo) => {
-      this.CreateTodoRender(todo);
+      this.RenderCreateTodo(todo);
     });
     completedTodoList.forEach((todo) => {
       this.storeRepository.updateTodoItem(todo);
     });
 
     activeTodoList.forEach((todo) => {
-      this.CreateTodoRender(todo);
+      this.RenderCreateTodo(todo);
     });
+
+    this.RenderCompleteTodoCount();
   }
 
-  CreateTodoRender(todo: Todo) {
+  RenderCompleteTodoCount() {
+    const completedTodoList = this.storeRepository.getCompletedTodoList();
+    this.renderRepository.updateAllClearButton(completedTodoList.length);
+  }
+
+  RenderCreateTodo(todo: Todo) {
     this.renderRepository.createTodoItem({
       todo,
       onClickTodoItem: () => this.ToggleTodoItem(todo.id),
@@ -79,7 +89,7 @@ class TodoListService {
       complete: false,
     };
 
-    this.CreateTodoRender(todo);
+    this.RenderCreateTodo(todo);
 
     this.storeRepository.createTodoItem(todo);
     this.renderRepository.clearInputBox();
@@ -89,9 +99,20 @@ class TodoListService {
   RemoveTodoItem(todoId: string) {
     this.storeRepository.removeTodoItem(todoId);
     this.renderRepository.removeTodoItem(todoId);
+    this.renderRepository.updateTodoCountText();
+
+    this.RenderCompleteTodoCount();
   }
 
-  ClearTodoItemAll() {}
+  ClearCompletedTodoItem() {
+    this.storeRepository.getCompletedTodoList().forEach((todo) => {
+      this.storeRepository.removeTodoItem(todo.id);
+      this.renderRepository.removeTodoItem(todo.id);
+    });
+
+    this.RenderCompleteTodoCount();
+    this.renderRepository.updateTodoCountText();
+  }
 }
 
 export default TodoListService;
