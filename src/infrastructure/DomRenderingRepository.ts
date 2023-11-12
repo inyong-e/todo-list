@@ -237,11 +237,16 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     const todoItemCheckBox = document.createElement("input");
     todoItemCheckBox.type = "checkbox";
     todoItemCheckBox.checked = todo?.complete ?? false;
+
     todoItem.appendChild(todoItemCheckBox);
 
     // Todo Item Text 생성
     const todoItemText = document.createElement("span");
     todoItemText.textContent = todo?.content ?? "";
+    if (todo?.complete) {
+      todoItemText.classList.add("cancel");
+    }
+
     todoItem.appendChild(todoItemText);
 
     // Todo Item Remove Button 생성

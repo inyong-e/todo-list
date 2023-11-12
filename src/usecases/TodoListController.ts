@@ -175,6 +175,8 @@ class TodoListService {
 
   RenderMouseMoveBody(todo: Todo) {
     return (e: MouseEvent) => {
+      if (todo.complete) return;
+
       if (!this.timer) {
         this.ShowTodoListAll();
       }
