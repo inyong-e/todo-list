@@ -1,12 +1,47 @@
-class TodoStoreRepository {
-  static TodoList: Todo[] = [];
+import { Todo, TodoStoreRepository } from "@/entities/Store";
 
+export default class todoStoreRepository implements TodoStoreRepository {
+  todoList: Todo[];
 
-  get TodoList() {
-    return TodoStoreRepository.TodoList;
+  constructor() {
+    this.todoList = [];
   }
 
-  set TodoList(todoList: Todo[]) {
-    TodoStoreRepository.TodoList = todoList;
+  createTodoItem(todo: Todo): void {
+    this.todoList.push(todo);
+  }
+
+  removeTodoItem(id: string): void {
+    this.todoList = this.todoList.filter((item) => item.id !== id);
+  }
+
+  removeTodoItemAll(): void {
+    this.todoList = [];
+  }
+
+  updateTodoItem(todo: Todo): void {
+    this.todoList = this.todoList.map((item) =>
+      item.id === todo.id ? todo : item,
+    );
+  }
+
+  getTodoListAll(): Todo[] {
+    return this.todoList;
+  }
+
+  getTodoItem(id: string): Todo | undefined {
+    return this.todoList.find((item) => item.id === id);
+  }
+
+  getActiveTodoList(): Todo[] {
+    return this.todoList.filter((item) => !item.complete);
+  }
+
+  getCompletedTodoList(): Todo[] {
+    return this.todoList.filter((item) => item.complete);
+  }
+
+  setTodoList(todoList: Todo[]): void {
+    this.todoList = todoList;
   }
 }
