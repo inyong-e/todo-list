@@ -156,6 +156,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     onClickRemoveButton,
     onDownTodoItem,
     onOverTodoItem,
+    onLeaveTodoItem,
   }: CreateTodoParams): void {
     const todoListWrapper = document.querySelector(
       `.${DomClassNames.todoListWrapper}`,
@@ -171,6 +172,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     // todo Item 에 필요한 이벤트 리스너들 추가
     todoItem.addEventListener("mousedown", onDownTodoItem);
     todoItem.addEventListener("mouseover", onOverTodoItem);
+    todoItem.addEventListener("mouseleave", onLeaveTodoItem);
 
     // Todo CheckBox 생성
     const todoItemCheckBox = document.createElement("input");
@@ -292,6 +294,16 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     ) as HTMLElement;
 
     filterButtonCompleted.style.color = "black";
+  }
+
+  fillOverBorderTodoItem(todo: Todo): void {
+    const todoItem = document.getElementsByClassName(todo.id)[0] as HTMLElement;
+    todoItem.classList.add(DomClassNames.overBorder);
+  }
+
+  clearOverBorderTodoItem(todo: Todo): void {
+    const todoItem = document.getElementsByClassName(todo.id)[0] as HTMLElement;
+    todoItem.classList.remove(DomClassNames.overBorder);
   }
 
   updateTodoItem(todo: Todo): void {

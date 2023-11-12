@@ -146,6 +146,10 @@ class TodoListService {
 
   OverTodoItem(todo: Todo) {
     this.overTodo = todo;
+
+    if (this.dragStatus) {
+      this.renderRepository.fillOverBorderTodoItem(todo);
+    }
   }
 
   RenderCreateTodo(todo: Todo) {
@@ -167,6 +171,9 @@ class TodoListService {
         this.renderRepository.addBodyMouseUpEvent(
           this.RenderMouseUpBody(todo).bind(this),
         );
+      },
+      onLeaveTodoItem: () => {
+        this.renderRepository.clearOverBorderTodoItem(todo);
       },
     });
   }

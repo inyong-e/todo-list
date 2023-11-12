@@ -5,6 +5,7 @@ export interface CreateTodoParams {
   onDownTodoItem: (e: Event) => void;
   onOverTodoItem: (e: Event) => void;
   onClickRemoveButton: (e: Event) => void;
+  onLeaveTodoItem: (e: Event) => void;
 }
 
 export enum DomClassNames {
@@ -22,6 +23,7 @@ export enum DomClassNames {
   disabled = "disabled",
   dragging = "dragging",
   hide = "hide",
+  overBorder = "over-border",
 }
 
 export interface TodoRenderRepository {
@@ -36,12 +38,14 @@ export interface TodoRenderRepository {
   fillFilterButtonAll(): void;
   fillFilterButtonActive(): void;
   fillFilterButtonCompleted(): void;
+  fillOverBorderTodoItem(todo: Todo): void;
   createMirrorTodoItem(todo: Todo): void;
   clearFilterButtonAll(): void;
   clearFilterButtonActive(): void;
   clearFilterButtonCompleted(): void;
   clearAllTodoList(): void;
   clearInputBox(): void;
+  clearOverBorderTodoItem(todo: Todo): void;
   createTodoItem({ todo, onClickRemoveButton }: CreateTodoParams): void;
   removeTodoItem(id: string): void;
   removeBodyMouseMoveEvent(): void;

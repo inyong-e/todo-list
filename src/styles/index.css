@@ -55,3 +55,7 @@ body{
 .hide {
   display: none;
 }
+
+.over-border {
+  border-left: 4px solid blue;
+}
