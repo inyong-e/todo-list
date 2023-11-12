@@ -76,9 +76,12 @@ export default class DomRenderingRepository implements TodoRenderRepository {
   }
 
   moveMirrorTodoItem(x: number, y: number): void {
+    const halfWidth = this.mirrorTodoElement.offsetWidth / 2;
+    const halfHeight = this.mirrorTodoElement.offsetHeight / 2;
+
     this.mirrorTodoElement?.classList.remove(DomClassNames.hide);
-    this.mirrorTodoElement?.style.setProperty("top", `${y}px`);
-    this.mirrorTodoElement?.style.setProperty("left", `${x}px`);
+    this.mirrorTodoElement?.style.setProperty("top", `${y - halfHeight}px`);
+    this.mirrorTodoElement?.style.setProperty("left", `${x - halfWidth}px`);
   }
 
   hideMirrorTodoItem(): void {
