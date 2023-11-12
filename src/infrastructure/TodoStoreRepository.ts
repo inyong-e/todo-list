@@ -40,4 +40,8 @@ export default class todoStoreRepository implements TodoStoreRepository {
   getCompletedTodoList(): Todo[] {
     return this.todoList.filter((item) => item.complete);
   }
+
+  setTodoList(todoList: Todo[]): void {
+    this.todoList = todoList;
+  }
 }

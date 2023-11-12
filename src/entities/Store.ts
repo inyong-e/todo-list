@@ -13,4 +13,5 @@ export interface TodoStoreRepository {
   getTodoItem(id: string): Todo | undefined;
   getActiveTodoList(): Todo[];
   getCompletedTodoList(): Todo[];
+  setTodoList(todoList: Todo[]): void;
 }

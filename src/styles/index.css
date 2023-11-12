@@ -49,6 +49,7 @@ body{
   position: absolute;
   justify-content: space-between;
   width: 300px;
+  pointer-events: none;
 }
 
 .hide {

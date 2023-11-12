@@ -93,7 +93,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     this.eventListenerMouseMoveMirrorTodoItem = e;
   }
 
-  addBodyMouseUpEvent(e: (e: Event) => void) {
+  addBodyMouseUpEvent(e: (e: Event) => (todo: Todo) => void) {
     document.body.addEventListener("mouseup", e);
     this.eventListenerMouseUpMirrorTodoItem = e;
   }
@@ -156,6 +156,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     onClickTodoItem,
     onClickRemoveButton,
     onDownTodoItem,
+    onOverTodoItem,
   }: CreateTodoParams): void {
     const todoListWrapper = document.querySelector(
       `.${DomClassNames.todoListWrapper}`,
@@ -171,6 +172,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     // todo Item 에 필요한 이벤트 리스너들 추가
     todoItem.addEventListener("click", onClickTodoItem);
     todoItem.addEventListener("mousedown", onDownTodoItem);
+    todoItem.addEventListener("mouseover", onOverTodoItem);
 
     // Todo CheckBox 생성
     const todoItemCheckBox = document.createElement("input");
@@ -216,7 +218,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todoItemDeleteButton.textContent = "삭제";
 
     todoItem.appendChild(todoItemDeleteButton);
-    document.body.appendChild(todoItem);
+    document.body.insertBefore(todoItem, document.body.firstChild);
 
     this.mirrorTodoElement = todoItem;
   }

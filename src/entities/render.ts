@@ -4,6 +4,7 @@ export interface CreateTodoParams {
   todo: Todo;
   onClickTodoItem: (e: Event) => void;
   onDownTodoItem: (e: Event) => void;
+  onOverTodoItem: (e: Event) => void;
   onClickRemoveButton: () => void;
 }
 
@@ -32,7 +33,7 @@ export interface TodoRenderRepository {
   addFilterButtonActiveEvent(e: (e: Event) => void): void;
   addFilterButtonCompletedEvent(e: (e: Event) => void): void;
   addBodyMouseMoveEvent(e: (e: Event) => void): void;
-  addBodyMouseUpEvent(e: (e: Event) => void): void;
+  addBodyMouseUpEvent(e: (e: Event) => (todo: Todo) => void): void;
   fillFilterButtonAll(): void;
   fillFilterButtonActive(): void;
   fillFilterButtonCompleted(): void;

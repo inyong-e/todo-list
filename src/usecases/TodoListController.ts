@@ -3,6 +3,7 @@ import { Todo, TodoStoreRepository } from "@/entities/Store";
 import generateUniqueId from "@/utils";
 
 class TodoListService {
+  overTodo: Todo | null = null;
   storeRepository: TodoStoreRepository;
   renderRepository: TodoRenderRepository;
 
@@ -101,6 +102,22 @@ class TodoListService {
     this.RenderCompleteTodoCount();
   }
 
+  ReLocateTodoItem(todo: Todo, overTodo: Todo) {
+    const todoList = this.storeRepository.getTodoListAll().slice();
+
+    const findTodoIndex = todoList.findIndex((item) => item.id === todo.id);
+    const findOverTodoIndex = todoList.findIndex(
+      (item) => item.id === overTodo.id,
+    );
+
+    const removedElement = todoList.splice(findTodoIndex, 1)[0];
+
+    todoList.splice(findOverTodoIndex, 0, removedElement);
+
+    this.storeRepository.setTodoList(todoList);
+    this.ShowTodoListAll();
+  }
+
   RenderCompleteTodoCount() {
     const completedTodoList = this.storeRepository.getCompletedTodoList();
     this.renderRepository.updateAllClearButton(completedTodoList.length);
@@ -110,10 +127,17 @@ class TodoListService {
     this.renderRepository.moveMirrorTodoItem(e.clientX, e.clientY);
   }
 
-  RenderMouseUpBody() {
-    this.renderRepository.hideMirrorTodoItem();
-    this.renderRepository.removeBodyMouseMoveEvent();
-    this.renderRepository.removeBodyMouseUpEvent();
+  RenderMouseUpBody(todo: Todo) {
+    return () => {
+      this.ReLocateTodoItem(todo, this.overTodo);
+      this.renderRepository.hideMirrorTodoItem();
+      this.renderRepository.removeBodyMouseMoveEvent();
+      this.renderRepository.removeBodyMouseUpEvent();
+    };
+  }
+
+  OverTodoItem(todo: Todo) {
+    this.overTodo = todo;
   }
 
   RenderCreateTodo(todo: Todo) {
@@ -121,6 +145,7 @@ class TodoListService {
       todo,
       onClickTodoItem: () => this.ToggleTodoItem(todo.id),
       onClickRemoveButton: () => this.RemoveTodoItem(todo.id),
+      onOverTodoItem: () => this.OverTodoItem(todo),
       onDownTodoItem: () => {
         this.renderRepository.showMirrorTodoItem(todo);
 
@@ -129,7 +154,7 @@ class TodoListService {
         );
 
         this.renderRepository.addBodyMouseUpEvent(
-          this.RenderMouseUpBody.bind(this),
+          this.RenderMouseUpBody(todo).bind(this),
         );
       },
     });
