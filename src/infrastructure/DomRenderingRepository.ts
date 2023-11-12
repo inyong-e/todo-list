@@ -189,7 +189,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
 
     // Todo Item Remove Button 생성
     const todoItemDeleteButton = document.createElement("button");
-    todoItemDeleteButton.addEventListener("click", onClickRemoveButton);
+    todoItemDeleteButton.addEventListener("mousedown", onClickRemoveButton);
     todoItemDeleteButton.textContent = "삭제";
 
     todoItem.appendChild(todoItemDeleteButton);

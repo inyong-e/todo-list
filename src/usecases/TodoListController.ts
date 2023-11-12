@@ -151,9 +151,13 @@ class TodoListService {
   RenderCreateTodo(todo: Todo) {
     this.renderRepository.createTodoItem({
       todo,
-      onClickRemoveButton: () => this.RemoveTodoItem(todo.id),
+      onClickRemoveButton: (e: Event) => {
+        e.stopPropagation();
+        this.RemoveTodoItem(todo.id);
+      },
       onOverTodoItem: () => this.OverTodoItem(todo),
-      onDownTodoItem: () => {
+      onDownTodoItem: (e) => {
+        e.stopPropagation();
         this.renderRepository.showMirrorTodoItem(todo);
 
         this.renderRepository.addBodyMouseMoveEvent(

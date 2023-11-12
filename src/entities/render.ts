@@ -4,7 +4,7 @@ export interface CreateTodoParams {
   todo: Todo;
   onDownTodoItem: (e: Event) => void;
   onOverTodoItem: (e: Event) => void;
-  onClickRemoveButton: () => void;
+  onClickRemoveButton: (e: Event) => void;
 }
 
 export enum DomClassNames {
