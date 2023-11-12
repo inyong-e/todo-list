@@ -29,6 +29,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
 
     // todoCountText 생성
     const todoCountText = document.createElement("span");
+    todoCountText.className = DomClassNames.todoCountText;
     todoCountText.textContent = "0 items left";
     footer.appendChild(todoCountText);
 
@@ -144,12 +145,16 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     todoItem.remove();
   }
 
-  updateTodoCountText(count: number): void {
+  updateTodoCountText(): void {
+    const todoListWrapper = document.querySelector(
+      `.${DomClassNames.todoListWrapper}`,
+    ) as HTMLElement;
+
     const todoCountText = document.querySelector(
       `.${DomClassNames.todoCountText}`,
     ) as HTMLElement;
 
-    todoCountText.textContent = `${count} items left`;
+    todoCountText.textContent = `${todoListWrapper.childElementCount} items left`;
   }
 
   updateAllClearButton(count: number): void {

@@ -19,7 +19,7 @@ class TodoListService {
 
   InitialRender(rootElement: HTMLElement) {
     this.renderRepository.initialRender(rootElement);
-    this.renderRepository.addInputBoxEvent(this.inputBoxKeyEvent.bind(this));
+    this.renderRepository.addInputBoxEvent(this.InputBoxKeyEvent.bind(this));
   }
 
   ShowTodoListAll() {
@@ -49,23 +49,18 @@ class TodoListService {
     const activeTodoList = this.storeRepository.getActiveTodoList();
 
     completedTodoList.forEach((todo) => {
-      this.createTodoRender(todo);
+      this.CreateTodoRender(todo);
     });
     completedTodoList.forEach((todo) => {
       this.storeRepository.updateTodoItem(todo);
     });
 
     activeTodoList.forEach((todo) => {
-      this.createTodoRender(todo);
+      this.CreateTodoRender(todo);
     });
   }
 
-  createTodoItem(todo: Todo) {
-    this.storeRepository.createTodoItem(todo);
-    this.createTodoRender(todo);
-  }
-
-  createTodoRender(todo: Todo) {
+  CreateTodoRender(todo: Todo) {
     this.renderRepository.createTodoItem({
       todo,
       onClickTodoItem: () => this.ToggleTodoItem(todo.id),
@@ -73,7 +68,7 @@ class TodoListService {
     });
   }
 
-  inputBoxKeyEvent(e: KeyboardEvent) {
+  InputBoxKeyEvent(e: KeyboardEvent) {
     if (e.key !== "Enter") return;
 
     const id = generateUniqueId();
@@ -84,8 +79,11 @@ class TodoListService {
       complete: false,
     };
 
-    this.createTodoItem(todo);
+    this.CreateTodoRender(todo);
+
+    this.storeRepository.createTodoItem(todo);
     this.renderRepository.clearInputBox();
+    this.renderRepository.updateTodoCountText();
   }
 
   RemoveTodoItem(todoId: string) {

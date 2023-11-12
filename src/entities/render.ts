@@ -36,4 +36,5 @@ export interface TodoRenderRepository {
   }: CreateTodoParams): void;
   removeTodoItem(id: string): void;
   updateTodoItem(todo: Todo);
+  updateTodoCountText(): void;
 }
