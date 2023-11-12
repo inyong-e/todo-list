@@ -36,18 +36,12 @@ class TodoListService {
 
   ToggleTodoItem(todoId: string) {
     const todo = this.storeRepository.getTodoItem(todoId);
+    if (!todo) return;
 
-    if (todo) {
-      this.storeRepository.updateTodoItem({
-        ...todo,
-        complete: !todo.complete,
-      });
+    const updatedTodo = { ...todo, complete: !todo.complete };
 
-      this.renderRepository.updateTodoItem({
-        ...todo,
-        complete: !todo.complete,
-      });
-    }
+    this.storeRepository.updateTodoItem(updatedTodo);
+    this.renderRepository.updateTodoItem(updatedTodo);
 
     this.renderRepository.clearAllTodoList();
 
@@ -74,29 +68,24 @@ class TodoListService {
   createTodoRender(todo: Todo) {
     this.renderRepository.createTodoItem({
       todo,
-      onClickTodoItem: () => {
-        this.ToggleTodoItem(todo.id);
-      },
-      onClickRemoveButton: () => {
-        this.RemoveTodoItem(todo.id);
-      },
+      onClickTodoItem: () => this.ToggleTodoItem(todo.id),
+      onClickRemoveButton: () => this.RemoveTodoItem(todo.id),
     });
   }
 
   inputBoxKeyEvent(e: KeyboardEvent) {
-    if (e.key === "Enter") {
-      const input = e.target as HTMLInputElement;
-      const id = generateUniqueId();
+    if (e.key !== "Enter") return;
 
-      const todo = {
-        id,
-        content: input.value,
-        complete: false,
-      };
+    const id = generateUniqueId();
 
-      this.createTodoItem(todo);
-      this.renderRepository.clearInputBox();
-    }
+    const todo = {
+      id,
+      content: (e.target as HTMLInputElement).value,
+      complete: false,
+    };
+
+    this.createTodoItem(todo);
+    this.renderRepository.clearInputBox();
   }
 
   RemoveTodoItem(todoId: string) {
