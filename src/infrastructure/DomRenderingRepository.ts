@@ -39,16 +39,19 @@ export default class DomRenderingRepository implements TodoRenderRepository {
 
     // filterButton-All 생성
     const filterButtonAll = document.createElement("button");
+    filterButtonAll.className = DomClassNames.filterButtonAll;
     filterButtonAll.textContent = "All";
     filterButtonWrapper.appendChild(filterButtonAll);
 
     // filterButton-Active 생성
     const filterButtonActive = document.createElement("button");
+    filterButtonActive.className = DomClassNames.filterButtonActive;
     filterButtonActive.textContent = "Active";
     filterButtonWrapper.appendChild(filterButtonActive);
 
     // filterButton-Completed 생성
     const filterButtonCompleted = document.createElement("button");
+    filterButtonCompleted.className = DomClassNames.filterButtonCompleted;
     filterButtonCompleted.textContent = "Completed";
     filterButtonWrapper.appendChild(filterButtonCompleted);
 
@@ -142,8 +145,8 @@ export default class DomRenderingRepository implements TodoRenderRepository {
   }
 
   removeTodoItem(id: string): void {
-    const todoItem = document.getElementsByClassName(id)[0] as HTMLElement;
-    todoItem.remove();
+    const todoItem = document.getElementsByClassName(id)?.[0] as HTMLElement;
+    todoItem?.remove();
   }
 
   updateTodoCountText(): void {
@@ -166,7 +169,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     allClearButton.textContent = `Clear completed (${count})`;
   }
 
-  updateFilterButtonAll(): void {
+  fillFilterButtonAll(): void {
     const filterButtonAll = document.querySelector(
       `.${DomClassNames.filterButtonAll}`,
     ) as HTMLElement;
@@ -174,7 +177,7 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     filterButtonAll.style.color = "red";
   }
 
-  updateFilterButtonActive(): void {
+  fillFilterButtonActive(): void {
     const filterButtonActive = document.querySelector(
       `.${DomClassNames.filterButtonActive}`,
     ) as HTMLElement;
@@ -182,12 +185,36 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     filterButtonActive.style.color = "red";
   }
 
-  updateFilterButtonCompleted(): void {
+  fillFilterButtonCompleted(): void {
     const filterButtonCompleted = document.querySelector(
       `.${DomClassNames.filterButtonCompleted}`,
     ) as HTMLElement;
 
     filterButtonCompleted.style.color = "red";
+  }
+
+  clearFilterButtonAll(): void {
+    const filterButtonAll = document.querySelector(
+      `.${DomClassNames.filterButtonAll}`,
+    ) as HTMLElement;
+
+    filterButtonAll.style.color = "black";
+  }
+
+  clearFilterButtonActive(): void {
+    const filterButtonActive = document.querySelector(
+      `.${DomClassNames.filterButtonActive}`,
+    ) as HTMLElement;
+
+    filterButtonActive.style.color = "black";
+  }
+
+  clearFilterButtonCompleted(): void {
+    const filterButtonCompleted = document.querySelector(
+      `.${DomClassNames.filterButtonCompleted}`,
+    ) as HTMLElement;
+
+    filterButtonCompleted.style.color = "black";
   }
 
   updateTodoItem(todo: Todo): void {
@@ -197,30 +224,6 @@ export default class DomRenderingRepository implements TodoRenderRepository {
 
     const checkbox = todoItem.querySelector("input") as HTMLInputElement;
     checkbox.checked = todo.complete;
-  }
-
-  clearFilterButtonCompletedToDefault(): void {
-    const filterButtonCompleted = document.querySelector(
-      `.${DomClassNames.filterButtonCompleted}`,
-    ) as HTMLElement;
-
-    filterButtonCompleted.style.color = "black";
-  }
-
-  clearFilterButtonAllToDefault(): void {
-    const filterButtonAll = document.querySelector(
-      `.${DomClassNames.filterButtonAll}`,
-    ) as HTMLElement;
-
-    filterButtonAll.style.color = "black";
-  }
-
-  clearFilterButtonActiveToDefault(): void {
-    const filterButtonActive = document.querySelector(
-      `.${DomClassNames.filterButtonActive}`,
-    ) as HTMLElement;
-
-    filterButtonActive.style.color = "black";
   }
 
   clearAllTodoList(): void {
@@ -245,5 +248,21 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     ) as HTMLElement;
 
     allClearButton.textContent = `Clear completed (${index})`;
+  }
+
+  preventInputBox(): void {
+    const inputBox = document.querySelector(
+      `.${DomClassNames.inputBox}`,
+    ) as HTMLInputElement;
+
+    inputBox.disabled = true;
+  }
+
+  activeInputBox(): void {
+    const inputBox = document.querySelector(
+      `.${DomClassNames.inputBox}`,
+    ) as HTMLInputElement;
+
+    inputBox.disabled = false;
   }
 }

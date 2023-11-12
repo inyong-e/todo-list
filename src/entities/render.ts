@@ -27,6 +27,13 @@ export interface TodoRenderRepository {
   addFilterButtonAllEvent(e: (e: Event) => void): void;
   addFilterButtonActiveEvent(e: (e: Event) => void): void;
   addFilterButtonCompletedEvent(e: (e: Event) => void): void;
+  fillFilterButtonAll(): void;
+  fillFilterButtonActive(): void;
+  fillFilterButtonCompleted(): void;
+  clearFilterButtonAll(): void;
+  clearFilterButtonActive(): void;
+  clearFilterButtonCompleted(): void;
+
   clearAllTodoList(): void;
   clearInputBox(): void;
   createTodoItem({
@@ -38,4 +45,6 @@ export interface TodoRenderRepository {
   updateTodoItem(todo: Todo);
   updateTodoCountText(): void;
   updateAllClearButton(count: number): void;
+  preventInputBox(): void;
+  activeInputBox(): void;
 }

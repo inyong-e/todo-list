@@ -20,22 +20,71 @@ class TodoListService {
   InitialRender(rootElement: HTMLElement) {
     this.renderRepository.initialRender(rootElement);
     this.renderRepository.addInputBoxEvent(this.InputBoxKeyEvent.bind(this));
+
     this.renderRepository.addAllClearCompletedButtonEvent(
       this.ClearCompletedTodoItem.bind(this),
     );
+
+    this.renderRepository.addFilterButtonAllEvent(
+      this.ShowTodoListAll.bind(this),
+    );
+
+    this.renderRepository.addFilterButtonActiveEvent(
+      this.ShowTodoListActive.bind(this),
+    );
+
+    this.renderRepository.addFilterButtonCompletedEvent(
+      this.ShowTodoListCompleted.bind(this),
+    );
+  }
+
+  ClearCompletedTodoItem() {
+    this.storeRepository.getCompletedTodoList().forEach((todo) => {
+      this.storeRepository.removeTodoItem(todo.id);
+      this.renderRepository.removeTodoItem(todo.id);
+    });
+
+    this.RenderCompleteTodoCount();
+    this.renderRepository.updateTodoCountText();
   }
 
   ShowTodoListAll() {
-    // const todoList = this.storeRepository.getTodoList();
-
     this.renderRepository.clearAllTodoList();
 
-    // todoList.forEach((todo) => {});
+    this.RenderCompletedTodoList();
+    this.RenderActiveTodoList();
+
+    this.renderRepository.updateTodoCountText();
+    this.renderRepository.activeInputBox();
+
+    this.renderRepository.fillFilterButtonAll();
+    this.renderRepository.clearFilterButtonActive();
+    this.renderRepository.clearFilterButtonCompleted();
   }
 
-  ShowTodoListActive() {}
+  ShowTodoListActive() {
+    this.renderRepository.clearAllTodoList();
+    this.RenderActiveTodoList();
 
-  ShowTodoListCompleted() {}
+    this.renderRepository.activeInputBox();
+    this.renderRepository.activeInputBox();
+
+    this.renderRepository.clearFilterButtonAll();
+    this.renderRepository.fillFilterButtonActive();
+    this.renderRepository.clearFilterButtonCompleted();
+  }
+
+  ShowTodoListCompleted() {
+    this.renderRepository.clearAllTodoList();
+    this.RenderCompletedTodoList();
+
+    this.renderRepository.updateTodoCountText();
+    this.renderRepository.preventInputBox();
+
+    this.renderRepository.clearFilterButtonAll();
+    this.renderRepository.clearFilterButtonActive();
+    this.renderRepository.fillFilterButtonCompleted();
+  }
 
   ToggleTodoItem(todoId: string) {
     const todo = this.storeRepository.getTodoItem(todoId);
@@ -44,23 +93,8 @@ class TodoListService {
     const updatedTodo = { ...todo, complete: !todo.complete };
 
     this.storeRepository.updateTodoItem(updatedTodo);
-    this.renderRepository.updateTodoItem(updatedTodo);
 
-    this.renderRepository.clearAllTodoList();
-
-    const completedTodoList = this.storeRepository.getCompletedTodoList();
-    const activeTodoList = this.storeRepository.getActiveTodoList();
-
-    completedTodoList.forEach((todo) => {
-      this.RenderCreateTodo(todo);
-    });
-    completedTodoList.forEach((todo) => {
-      this.storeRepository.updateTodoItem(todo);
-    });
-
-    activeTodoList.forEach((todo) => {
-      this.RenderCreateTodo(todo);
-    });
+    this.ShowTodoListAll();
 
     this.RenderCompleteTodoCount();
   }
@@ -75,6 +109,18 @@ class TodoListService {
       todo,
       onClickTodoItem: () => this.ToggleTodoItem(todo.id),
       onClickRemoveButton: () => this.RemoveTodoItem(todo.id),
+    });
+  }
+
+  RenderActiveTodoList() {
+    this.storeRepository.getActiveTodoList().forEach((todo) => {
+      this.RenderCreateTodo(todo);
+    });
+  }
+
+  RenderCompletedTodoList() {
+    this.storeRepository.getCompletedTodoList().forEach((todo) => {
+      this.RenderCreateTodo(todo);
     });
   }
 
@@ -102,16 +148,6 @@ class TodoListService {
     this.renderRepository.updateTodoCountText();
 
     this.RenderCompleteTodoCount();
-  }
-
-  ClearCompletedTodoItem() {
-    this.storeRepository.getCompletedTodoList().forEach((todo) => {
-      this.storeRepository.removeTodoItem(todo.id);
-      this.renderRepository.removeTodoItem(todo.id);
-    });
-
-    this.RenderCompleteTodoCount();
-    this.renderRepository.updateTodoCountText();
   }
 }
 
