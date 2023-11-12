@@ -19,11 +19,16 @@
   border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
-  padding-bottom: 12px;
+  padding: 12px 0;
 }
 
 .footer {
   margin-top: 18px;
   display: flex;
   justify-content: space-between
+}
+
+.cancel {
+  text-decoration: line-through;
+  color: red;
 }

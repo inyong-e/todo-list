@@ -9,6 +9,8 @@ export interface TodoStoreRepository {
   removeTodoItem(id: string): void;
   removeTodoItemAll(): void;
   updateTodoItem(todo: Todo): void;
-  getTodoList(): Todo[];
+  getTodoListAll(): Todo[];
   getTodoItem(id: string): Todo | undefined;
+  getActiveTodoList(): Todo[];
+  getCompletedTodoList(): Todo[];
 }

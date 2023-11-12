@@ -1,4 +1,9 @@
-import { DomClassNames, TodoRenderRepository } from "@/entities/render";
+import { Todo } from "@/entities/Store";
+import {
+  CreateTodoParams,
+  DomClassNames,
+  TodoRenderRepository,
+} from "@/entities/render";
 
 export default class DomRenderingRepository implements TodoRenderRepository {
   initialRender(body: HTMLElement): void {
@@ -52,42 +57,91 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     footer.appendChild(allClearButton);
 
     body.appendChild(rootElement);
-
-    // Todo Item 생성
-    this.createTodoItem("Todo Item 1", () => {});
   }
 
-  createTodoItem(text: string, eventHandler: () => void): void {
+  addInputBoxEvent(e: (e: Event) => void) {
+    const inputBox = document.querySelector(
+      `.${DomClassNames.inputBox}`,
+    ) as HTMLInputElement;
+
+    inputBox.addEventListener("keydown", e);
+  }
+
+  addAllClearCompletedButtonEvent(e: (e: Event) => void) {
+    const allClearButton = document.querySelector(
+      `.${DomClassNames.allClearButton}`,
+    ) as HTMLElement;
+
+    allClearButton.addEventListener("click", e);
+  }
+
+  addFilterButtonAllEvent(e: (e: Event) => void) {
+    const filterButtonAll = document.querySelector(
+      `.${DomClassNames.filterButtonAll}`,
+    ) as HTMLElement;
+
+    filterButtonAll.addEventListener("click", e);
+  }
+
+  addFilterButtonActiveEvent(e: (e: Event) => void) {
+    const filterButtonActive = document.querySelector(
+      `.${DomClassNames.filterButtonActive}`,
+    ) as HTMLElement;
+
+    filterButtonActive.addEventListener("click", e);
+  }
+
+  addFilterButtonCompletedEvent(e: (e: Event) => void) {
+    const filterButtonCompleted = document.querySelector(
+      `.${DomClassNames.filterButtonCompleted}`,
+    ) as HTMLElement;
+
+    filterButtonCompleted.addEventListener("click", e);
+  }
+
+  createTodoItem({
+    todo,
+    onClickTodoItem,
+    onClickRemoveButton,
+  }: CreateTodoParams): void {
     const todoListWrapper = document.querySelector(
       `.${DomClassNames.todoListWrapper}`,
     ) as HTMLElement;
 
+    // Todo Item 생성
     const todoItem = document.createElement("div");
-    todoItem.className = "todo-item";
-    todoListWrapper.appendChild(todoItem);
+    todoItem.classList.add(DomClassNames.todoItem);
+    todoItem.classList.add(todo.id);
 
+    todoItem.addEventListener("click", onClickTodoItem);
+    todoListWrapper.insertBefore(todoItem, todoListWrapper.firstChild);
+
+    // Todo CheckBox 생성
+    const todoItemCheckBox = document.createElement("input");
+    todoItemCheckBox.type = "checkbox";
+    todoItemCheckBox.checked = todo.complete;
+    todoItem.appendChild(todoItemCheckBox);
+
+    // Todo Item Text 생성
     const todoItemText = document.createElement("span");
-    todoItemText.textContent = text;
+    todoItemText.textContent = todo.content;
     todoItem.appendChild(todoItemText);
 
-    const todoItemDeleteButton = document.createElement("button");
-    todoItemDeleteButton.textContent = "삭제";
+    if (todo.complete) {
+      todoItemText.classList.add("cancel");
+    }
 
-    todoItemDeleteButton.addEventListener("click", eventHandler);
+    // Todo Item Remove Button 생성
+    const todoItemDeleteButton = document.createElement("button");
+    todoItemDeleteButton.addEventListener("click", onClickRemoveButton);
+    todoItemDeleteButton.textContent = "삭제";
 
     todoItem.appendChild(todoItemDeleteButton);
   }
 
-  removeTodoItem(index: number): void {
-    const todoListWrapper = document.querySelector(
-      `.${DomClassNames.todoListWrapper}`,
-    ) as HTMLElement;
-
-    const todoItem = document.getElementsByClassName(DomClassNames.todoItem)[
-      index
-    ] as HTMLElement;
-
-    todoListWrapper.removeChild(todoItem);
+  removeTodoItem(id: string): void {
+    const todoItem = document.getElementsByClassName(id)[0] as HTMLElement;
+    todoItem.remove();
   }
 
   updateTodoCountText(count: number): void {
@@ -130,6 +184,15 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     filterButtonCompleted.style.color = "red";
   }
 
+  updateTodoItem(todo: Todo): void {
+    const todoItem = document.getElementsByClassName(todo.id)[0] as HTMLElement;
+    const span = todoItem.querySelector("span") as HTMLElement;
+    span.classList.toggle("cancel");
+
+    const checkbox = todoItem.querySelector("input") as HTMLInputElement;
+    checkbox.checked = todo.complete;
+  }
+
   clearFilterButtonCompletedToDefault(): void {
     const filterButtonCompleted = document.querySelector(
       `.${DomClassNames.filterButtonCompleted}`,
@@ -154,29 +217,20 @@ export default class DomRenderingRepository implements TodoRenderRepository {
     filterButtonActive.style.color = "black";
   }
 
-  updateInputBox(text: string): void {
-    const inputBox = document.querySelector(
-      `.${DomClassNames.inputBox}`,
-    ) as HTMLInputElement;
-
-    inputBox.value = text;
-  }
-
-  updateTodoItem(index: number, text: string): void {
-    const todoItem = document.getElementsByClassName(DomClassNames.todoItem)[
-      index
-    ] as HTMLElement;
-
-    const todoItemText = todoItem.querySelector("span") as HTMLElement;
-    todoItemText.textContent = text;
-  }
-
   clearAllTodoList(): void {
     const todoListWrapper = document.querySelector(
       `.${DomClassNames.todoListWrapper}`,
     ) as HTMLElement;
 
     todoListWrapper.innerHTML = "";
+  }
+
+  clearInputBox(): void {
+    const inputBox = document.querySelector(
+      `.${DomClassNames.inputBox}`,
+    ) as HTMLInputElement;
+
+    inputBox.value = "";
   }
 
   updateAllClearButtonText(index: number): void {

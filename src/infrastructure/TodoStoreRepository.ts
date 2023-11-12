@@ -25,11 +25,19 @@ export default class todoStoreRepository implements TodoStoreRepository {
     );
   }
 
-  getTodoList(): Todo[] {
+  getTodoListAll(): Todo[] {
     return this.todoList;
   }
 
   getTodoItem(id: string): Todo | undefined {
     return this.todoList.find((item) => item.id === id);
+  }
+
+  getActiveTodoList(): Todo[] {
+    return this.todoList.filter((item) => !item.complete);
+  }
+
+  getCompletedTodoList(): Todo[] {
+    return this.todoList.filter((item) => item.complete);
   }
 }
