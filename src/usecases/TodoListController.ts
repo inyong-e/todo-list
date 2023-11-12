@@ -66,7 +66,7 @@ class TodoListService {
     this.renderRepository.clearAllTodoList();
     this.RenderActiveTodoList();
 
-    this.renderRepository.activeInputBox();
+    this.renderRepository.updateTodoCountText();
     this.renderRepository.activeInputBox();
 
     this.renderRepository.clearFilterButtonAll();
